@@ -1,4 +1,4 @@
-import { useCallback, useState ,useEffect} from 'react'
+import { useCallback, useState ,useEffect, useRef} from 'react'
 
 function App() {
 
@@ -6,6 +6,7 @@ function App() {
   const [numberAllowed, setNumberAllowed] = useState(false);
   const [charAllowed, setCharAllowed] = useState(false);
   const [password, setPassword] = useState('');
+  const passwrodRef = useRef(null);
 
 
   //function Password Generater 
@@ -20,6 +21,11 @@ function App() {
       setPassword(pass)
     }
   },[length,charAllowed, numberAllowed, setPassword]);
+ 
+  const copyPasswordClipbord = useCallback(()=>{
+    passwrodRef.current?.setSelectionRange(0,5)
+    window.navigator.clipboard.writeText(password)
+  },[password])
 
   useEffect(()=>{passwordGenerator()},[length,charAllowed, numberAllowed,passwordGenerator])
   return (
@@ -30,12 +36,13 @@ function App() {
         <h1 className='text-2xl text-center text-white my-3'>Password Genrator</h1>
       <div className='flex shadow rounded-lg overflow-hidden md-4'>
         <input type='text'
+        ref={passwrodRef}
         value={password}
         className='outline-none w-full py-1 px-3'
         placeholder='Password'
         readOnly
         />
-        <button className='outline-none bg-blue-700 text-white px-3 py-0.5 shrink-0' onChange={()=>console.log("print")}>Copy</button>
+        <button onClick={copyPasswordClipbord} className='outline-none bg-blue-700 text-white px-3 py-0.5 shrink-0' onChange={()=>console.log("print")}>Copy</button>
       </div>
       <div className='flex text-sm gap-x-2'></div>
       <div className='flex items-center gap-x-1'>
@@ -58,6 +65,7 @@ function App() {
         />
         <label>Numbers</label>
         <input 
+      
         type='checkbox'
          defaultChecked={numberAllowed}
           id='Characters'
